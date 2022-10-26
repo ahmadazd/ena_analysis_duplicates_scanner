@@ -82,7 +82,7 @@ def fetch_details(connection):
     dict = {}
     value =[]
     c.execute(
-        f"select w.upload_file_path, count(w.upload_file_path) from webin_file w join (select * from analysis where bioproject_id in ({config['DataHub_Projects']['projects']}) and status_id !=5) a \
+        f"select w.upload_file_path, count(w.upload_file_path) from webin_file w join (select * from analysis where bioproject_id in ({config['DataHub_Projects']['projects']}) and status_id !=5 and status_id !=3) a \
          on a.analysis_id = w.data_file_owner_id GROUP BY w.upload_file_path HAVING COUNT(w.upload_file_path) > 1")
     for row in c:
         value.append(row [0])
@@ -103,7 +103,7 @@ def fetch_details(connection):
                 f"select a.analysis_id, a.status_id, a.first_created, a.audit_time, w.upload_file_path, a.bioproject_id, w.bytes, w.checksum\
                 from analysis a join (select * from webin_file where\
                 upload_file_path in ('{file_name}')) w\
-                on a.analysis_id = w.data_file_owner_id where a.status_id !=5")
+                on a.analysis_id = w.data_file_owner_id where a.status_id !=5 and a.status_id !=3")
             for row in c:
                 f.write(str(row[0]) + "\t" + str(row[1]) + "\t" + str(row[2]) + "\t" + str(row[3]) + "\t" + str(row[4]) + "\t" + str(row[5]) + "\t" + str(row[6]) + "\t" + str(row[7]) + "\n")
     f.close()
